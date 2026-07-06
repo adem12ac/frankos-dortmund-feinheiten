@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Facebook, Phone, Mail, MapPin, MessageCircle } from "lucide-react";
 import logoAsset from "@/assets/frankos-logo.jpg.asset.json";
+import { InstagramIcon, TikTokIcon } from "@/components/social-icons";
 
 export function SiteFooter() {
   return (
@@ -60,6 +61,24 @@ export function SiteFooter() {
               className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition hover:bg-accent hover:text-primary"
             >
               <Facebook className="h-5 w-5" />
+            </a>
+            <a
+              href="https://www.instagram.com/frankos_gmbh"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition hover:bg-accent hover:text-primary"
+            >
+              <InstagramIcon className="h-5 w-5" />
+            </a>
+            <a
+              href="https://www.tiktok.com/@frankos_gmbh"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="TikTok"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/10 transition hover:bg-accent hover:text-primary"
+            >
+              <TikTokIcon className="h-5 w-5" />
             </a>
             <a
               href="https://wa.me/491741696161"

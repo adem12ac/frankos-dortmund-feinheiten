@@ -16,6 +16,7 @@ import { Route as KontaktRouteImport } from './routes/kontakt'
 import { Route as ImpressumRouteImport } from './routes/impressum'
 import { Route as DatenschutzRouteImport } from './routes/datenschutz'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProduktHandleRouteImport } from './routes/produkt.$handle'
 
 const UeberUnsRoute = UeberUnsRouteImport.update({
   id: '/ueber-uns',
@@ -52,6 +53,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProduktHandleRoute = ProduktHandleRouteImport.update({
+  id: '/produkt/$handle',
+  path: '/produkt/$handle',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -61,6 +67,7 @@ export interface FileRoutesByFullPath {
   '/produkte': typeof ProdukteRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/ueber-uns': typeof UeberUnsRoute
+  '/produkt/$handle': typeof ProduktHandleRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,6 +77,7 @@ export interface FileRoutesByTo {
   '/produkte': typeof ProdukteRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/ueber-uns': typeof UeberUnsRoute
+  '/produkt/$handle': typeof ProduktHandleRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,6 +88,7 @@ export interface FileRoutesById {
   '/produkte': typeof ProdukteRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/ueber-uns': typeof UeberUnsRoute
+  '/produkt/$handle': typeof ProduktHandleRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,6 +100,7 @@ export interface FileRouteTypes {
     | '/produkte'
     | '/sitemap.xml'
     | '/ueber-uns'
+    | '/produkt/$handle'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/produkte'
     | '/sitemap.xml'
     | '/ueber-uns'
+    | '/produkt/$handle'
   id:
     | '__root__'
     | '/'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/produkte'
     | '/sitemap.xml'
     | '/ueber-uns'
+    | '/produkt/$handle'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,6 +131,7 @@ export interface RootRouteChildren {
   ProdukteRoute: typeof ProdukteRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   UeberUnsRoute: typeof UeberUnsRoute
+  ProduktHandleRoute: typeof ProduktHandleRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -172,6 +185,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/produkt/$handle': {
+      id: '/produkt/$handle'
+      path: '/produkt/$handle'
+      fullPath: '/produkt/$handle'
+      preLoaderRoute: typeof ProduktHandleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -183,6 +203,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProdukteRoute: ProdukteRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   UeberUnsRoute: UeberUnsRoute,
+  ProduktHandleRoute: ProduktHandleRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

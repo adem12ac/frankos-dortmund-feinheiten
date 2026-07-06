@@ -3,7 +3,10 @@ import { ArrowRight, Truck, Leaf, Award, Clock, MapPin, Phone } from "lucide-rea
 import heroAsset from "@/assets/frankos-hero.jpg.asset.json";
 import shelfAsset from "@/assets/store-shelf.jpg.asset.json";
 import prsutaAsset from "@/assets/prsuta-slices.jpg.asset.json";
-import { products, categories } from "@/lib/products";
+import { categories } from "@/lib/products";
+import { DeliveryInfo } from "@/components/delivery-info";
+import { GoogleReviews } from "@/components/google-reviews";
+import { FeaturedProducts } from "@/components/featured-products";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -45,7 +48,6 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const featured = products.slice(0, 4);
   return (
     <>
       {/* HERO */}
@@ -184,53 +186,13 @@ function Index() {
       </section>
 
       {/* FEATURED PRODUCTS */}
-      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-widest text-secondary">Beliebt</p>
-            <h2 className="mt-2 font-display text-4xl font-bold text-foreground sm:text-5xl">Unsere Bestseller</h2>
-          </div>
-          <Link to="/produkte" className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
-            Alle Produkte <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
+      <FeaturedProducts />
 
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {featured.map((p) => (
-            <article
-              key={p.id}
-              className="group overflow-hidden rounded-2xl border border-border bg-card transition hover:-translate-y-1 hover:shadow-[var(--shadow-warm)]"
-            >
-              <div className="relative aspect-square overflow-hidden bg-muted">
-                <img
-                  src={p.image}
-                  alt={p.name}
-                  className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                  loading="lazy"
-                />
-                {p.badge && (
-                  <span className="absolute left-3 top-3 rounded-full bg-primary px-3 py-1 text-xs font-bold text-primary-foreground">
-                    {p.badge}
-                  </span>
-                )}
-              </div>
-              <div className="p-5">
-                <h3 className="font-display text-lg font-bold text-foreground">{p.name}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{p.unit}</p>
-                <div className="mt-3 flex items-center justify-between">
-                  <span className="font-display text-xl font-bold text-primary">{p.price}</span>
-                  <Link
-                    to="/kontakt"
-                    className="rounded-full bg-secondary px-4 py-2 text-xs font-semibold text-secondary-foreground transition hover:bg-secondary/90"
-                  >
-                    Bestellen
-                  </Link>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
+      {/* DELIVERY */}
+      <DeliveryInfo />
+
+      {/* GOOGLE REVIEWS */}
+      <GoogleReviews />
 
       {/* CTA */}
       <section className="relative overflow-hidden bg-primary text-primary-foreground">
@@ -244,8 +206,14 @@ function Index() {
               Kommen Sie vorbei, probieren Sie unsere Spezialitäten und lassen Sie sich beraten. Wir freuen uns auf Sie!
             </p>
             <div className="mt-5 flex flex-wrap items-center gap-5 text-sm">
-              <span className="inline-flex items-center gap-2"><MapPin className="h-4 w-4" /> Arnoldstraße 4, 44147 Dortmund</span>
-              <span className="inline-flex items-center gap-2"><Phone className="h-4 w-4" /> +49 174 1696161</span>
+              <span className="inline-flex items-center gap-2">
+                <MapPin className="h-4 w-4" />
+                <span>Arnoldstraße 4, 44147 Dortmund</span>
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <Phone className="h-4 w-4" />
+                <span>+49 174 1696161</span>
+              </span>
             </div>
           </div>
           <div className="flex flex-wrap gap-3">

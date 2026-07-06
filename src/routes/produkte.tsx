@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
-import { Search } from "lucide-react";
-import { products, categories } from "@/lib/products";
+import { useMemo, useState } from "react";
+import { Search, Loader2 } from "lucide-react";
+import { useShopifyProducts } from "@/hooks/use-shopify-products";
+import { ProductCard } from "@/components/featured-products";
 
 export const Route = createFileRoute("/produkte")({
   component: ProduktePage,
@@ -24,10 +25,25 @@ export const Route = createFileRoute("/produkte")({
 function ProduktePage() {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<string>("alle");
+  const { data: products, isLoading, isError } = useShopifyProducts(100);
 
-  const filtered = products.filter((p) => {
-    const matchesQ = p.name.toLowerCase().includes(q.toLowerCase()) || p.description.toLowerCase().includes(q.toLowerCase());
-    const matchesCat = cat === "alle" || p.category === cat;
+  // Derive categories dynamically from productType/tags returned by Shopify.
+  const categories = useMemo(() => {
+    const set = new Map<string, string>();
+    (products ?? []).forEach((p) => {
+      const t = p.node.productType?.trim();
+      if (t) set.set(t.toLowerCase(), t);
+    });
+    return Array.from(set.entries()).map(([id, label]) => ({ id, label }));
+  }, [products]);
+
+  const filtered = (products ?? []).filter((p) => {
+    const n = p.node;
+    const matchesQ =
+      n.title.toLowerCase().includes(q.toLowerCase()) ||
+      (n.description ?? "").toLowerCase().includes(q.toLowerCase());
+    const matchesCat =
+      cat === "alle" || (n.productType ?? "").toLowerCase() === cat;
     return matchesQ && matchesCat;
   });
 
@@ -58,7 +74,7 @@ function ProduktePage() {
               <FilterChip active={cat === "alle"} onClick={() => setCat("alle")}>Alle</FilterChip>
               {categories.map((c) => (
                 <FilterChip key={c.id} active={cat === c.id} onClick={() => setCat(c.id)}>
-                  <span aria-hidden>{c.emoji}</span> {c.label}
+                  {c.label}
                 </FilterChip>
               ))}
             </div>
@@ -67,47 +83,22 @@ function ProduktePage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-        {filtered.length === 0 ? (
-          <p className="py-16 text-center text-muted-foreground">Keine Produkte gefunden.</p>
+        {isLoading ? (
+          <div className="flex items-center justify-center py-24">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : isError ? (
+          <p className="py-16 text-center text-muted-foreground">
+            Produkte konnten nicht geladen werden. Bitte später erneut versuchen.
+          </p>
+        ) : filtered.length === 0 ? (
+          <p className="py-16 text-center text-muted-foreground">
+            Keine Produkte gefunden. Passen Sie Suche oder Kategorie an.
+          </p>
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filtered.map((p) => (
-              <article
-                key={p.id}
-                className="group overflow-hidden rounded-2xl border border-border bg-card transition hover:-translate-y-1 hover:shadow-[var(--shadow-warm)]"
-              >
-                <div className="relative aspect-square overflow-hidden bg-muted">
-                  <img
-                    src={p.image}
-                    alt={p.name}
-                    loading="lazy"
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                  />
-                  {p.badge && (
-                    <span className="absolute left-3 top-3 rounded-full bg-primary px-3 py-1 text-xs font-bold text-primary-foreground">
-                      {p.badge}
-                    </span>
-                  )}
-                </div>
-                <div className="flex flex-col gap-3 p-5">
-                  <div>
-                    <h2 className="font-display text-lg font-bold text-foreground">{p.name}</h2>
-                    <p className="mt-1 text-xs text-muted-foreground">{p.unit}</p>
-                  </div>
-                  <p className="text-sm text-muted-foreground line-clamp-2">{p.description}</p>
-                  <div className="mt-auto flex items-center justify-between pt-2">
-                    <span className="font-display text-xl font-bold text-primary">{p.price}</span>
-                    <a
-                      href={`https://wa.me/491741696161?text=${encodeURIComponent(`Hallo Frankos, ich möchte gerne bestellen: ${p.name} (${p.unit})`)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="rounded-full bg-secondary px-4 py-2 text-xs font-semibold text-secondary-foreground transition hover:bg-secondary/90"
-                    >
-                      Bestellen
-                    </a>
-                  </div>
-                </div>
-              </article>
+              <ProductCard key={p.node.id} product={p} />
             ))}
           </div>
         )}
