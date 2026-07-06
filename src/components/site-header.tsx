@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Menu, X, ShoppingBag } from "lucide-react";
 import logoAsset from "@/assets/frankos-logo.jpg.asset.json";
+import { CartDrawer } from "@/components/cart-drawer";
+import { InstagramIcon, TikTokIcon } from "@/components/social-icons";
 
 const nav = [
   { to: "/", label: "Startseite" },
@@ -44,12 +46,31 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <div className="hidden md:block">
+        <div className="flex items-center gap-2">
+          <a
+            href="https://www.instagram.com/frankos_gmbh"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+            className="hidden h-9 w-9 items-center justify-center rounded-full text-foreground/70 transition hover:bg-muted hover:text-primary sm:inline-flex"
+          >
+            <InstagramIcon className="h-4 w-4" />
+          </a>
+          <a
+            href="https://www.tiktok.com/@frankos_gmbh"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="TikTok"
+            className="hidden h-9 w-9 items-center justify-center rounded-full text-foreground/70 transition hover:bg-muted hover:text-primary sm:inline-flex"
+          >
+            <TikTokIcon className="h-4 w-4" />
+          </a>
+          <CartDrawer />
           <Link
             to="/produkte"
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90"
+            className="hidden items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90 md:inline-flex"
           >
-            <ShoppingBag className="h-4 w-4" /> Bestellen
+            <ShoppingBag className="h-4 w-4" /> Shop
           </Link>
         </div>
 

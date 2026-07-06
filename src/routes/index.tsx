@@ -3,7 +3,9 @@ import { ArrowRight, Truck, Leaf, Award, Clock, MapPin, Phone } from "lucide-rea
 import heroAsset from "@/assets/frankos-hero.jpg.asset.json";
 import shelfAsset from "@/assets/store-shelf.jpg.asset.json";
 import prsutaAsset from "@/assets/prsuta-slices.jpg.asset.json";
-import { products, categories } from "@/lib/products";
+import { categories } from "@/lib/products";
+import { DeliveryInfo } from "@/components/delivery-info";
+import { GoogleReviews } from "@/components/google-reviews";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -45,7 +47,6 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const featured = products.slice(0, 4);
   return (
     <>
       {/* HERO */}
@@ -244,8 +245,14 @@ function Index() {
               Kommen Sie vorbei, probieren Sie unsere Spezialitäten und lassen Sie sich beraten. Wir freuen uns auf Sie!
             </p>
             <div className="mt-5 flex flex-wrap items-center gap-5 text-sm">
-              <span className="inline-flex items-center gap-2"><MapPin className="h-4 w-4" /> Arnoldstraße 4, 44147 Dortmund</span>
-              <span className="inline-flex items-center gap-2"><Phone className="h-4 w-4" /> +49 174 1696161</span>
+              <span className="inline-flex items-center gap-2">
+                <MapPin className="h-4 w-4" />
+                <span>Arnoldstraße 4, 44147 Dortmund</span>
+              </span>
+              <span className="inline-flex items-center gap-2">
+                <Phone className="h-4 w-4" />
+                <span>+49 174 1696161</span>
+              </span>
             </div>
           </div>
           <div className="flex flex-wrap gap-3">
