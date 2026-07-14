@@ -8,9 +8,11 @@ const SESSION_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 days
 const encoder = new TextEncoder();
 
 async function getHmacKey(): Promise<CryptoKey> {
+  // .trim() guards against a stray trailing newline/space that easily sneaks
+  // in when pasting the secret into Vercel's Environment Variables UI.
   return crypto.subtle.importKey(
     "raw",
-    encoder.encode(requireEnv("ADMIN_SESSION_SECRET")),
+    encoder.encode(requireEnv("ADMIN_SESSION_SECRET").trim()),
     { name: "HMAC", hash: "SHA-256" },
     false,
     ["sign", "verify"],
@@ -44,7 +46,8 @@ export function timingSafeEqual(a: string, b: string): boolean {
 }
 
 export function verifyAdminPassword(password: string): boolean {
-  return timingSafeEqual(password, requireEnv("ADMIN_PASSWORD"));
+  // Same trailing-whitespace tolerance as the session secret above.
+  return timingSafeEqual(password, requireEnv("ADMIN_PASSWORD").trim());
 }
 
 /** Creates a signed session token: `<expiresAtMs>.<hmac>`. */
