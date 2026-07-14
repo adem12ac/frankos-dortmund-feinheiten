@@ -15,7 +15,6 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 import { Toaster } from "@/components/ui/sonner";
-import { useCartSync } from "@/hooks/use-cart-sync";
 
 function NotFoundComponent() {
   return (
@@ -83,11 +82,23 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Frankos Balkan Food — Balkan Spezialitäten in Dortmund" },
-      { name: "description", content: "Frankos GmbH in Dortmund: authentische Balkan-Spezialitäten, hausgemachte Ajvar, Pršuta, eingelegtes Gemüse, Wurstwaren & mehr. Frisch aus dem Balkan zu Ihnen." },
+      {
+        name: "description",
+        content:
+          "Frankos GmbH in Dortmund: authentische Balkan-Spezialitäten, hausgemachte Ajvar, Pršuta, eingelegtes Gemüse, Wurstwaren & mehr. Frisch aus dem Balkan zu Ihnen.",
+      },
       { name: "author", content: "Frankos GmbH" },
-      { name: "keywords", content: "Balkan Lebensmittel Dortmund, Ajvar, Pršuta, Suva goveđa, Frankos, Balkan Shop, Ćevapi, montenegrinische Produkte" },
+      {
+        name: "keywords",
+        content:
+          "Balkan Lebensmittel Dortmund, Ajvar, Pršuta, Suva goveđa, Frankos, Balkan Shop, Ćevapi, montenegrinische Produkte",
+      },
       { property: "og:title", content: "Frankos Balkan Food — Balkan Spezialitäten in Dortmund" },
-      { property: "og:description", content: "Authentische Balkan-Spezialitäten aus Dortmund. Jetzt bestellen oder im Laden vorbeikommen." },
+      {
+        property: "og:description",
+        content:
+          "Authentische Balkan-Spezialitäten aus Dortmund. Jetzt bestellen oder im Laden vorbeikommen.",
+      },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "Frankos Balkan Food" },
       { property: "og:locale", content: "de_DE" },
@@ -130,7 +141,6 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  useCartSync();
 
   return (
     <QueryClientProvider client={queryClient}>

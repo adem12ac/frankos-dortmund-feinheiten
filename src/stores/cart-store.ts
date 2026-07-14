@@ -1,165 +1,114 @@
+// Local cart store. The cart lives entirely in the browser; prices are
+// re-validated server-side when the Stripe Checkout Session is created.
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import {
-  addLineToShopifyCart,
-  createShopifyCart,
-  removeLineFromShopifyCart,
-  storefrontApiRequest,
-  updateShopifyCartLine,
-  CART_QUERY,
-  type CartItem,
-} from "@/lib/shopify";
+import { toast } from "sonner";
+import type { CartLine, Product } from "@/lib/shop-types";
 
 interface CartStore {
-  items: CartItem[];
-  cartId: string | null;
-  checkoutUrl: string | null;
+  items: CartLine[];
   isLoading: boolean;
-  isSyncing: boolean;
-  addItem: (item: Omit<CartItem, "lineId">) => Promise<void>;
-  updateQuantity: (variantId: string, quantity: number) => Promise<void>;
-  removeItem: (variantId: string) => Promise<void>;
+  addItem: (product: Product, quantity?: number) => void;
+  updateQuantity: (productId: string, quantity: number) => void;
+  removeItem: (productId: string) => void;
   clearCart: () => void;
-  syncCart: () => Promise<void>;
-  getCheckoutUrl: () => string | null;
+  checkout: () => Promise<void>;
 }
 
 export const useCartStore = create<CartStore>()(
   persist(
     (set, get) => ({
       items: [],
-      cartId: null,
-      checkoutUrl: null,
       isLoading: false,
-      isSyncing: false,
 
-      addItem: async (item) => {
-        const { items, cartId, clearCart } = get();
-        const existingItem = items.find((i) => i.variantId === item.variantId);
-        set({ isLoading: true });
-        try {
-          if (!cartId) {
-            const result = await createShopifyCart({ ...item, lineId: null });
-            if (result) {
-              set({
-                cartId: result.cartId,
-                checkoutUrl: result.checkoutUrl,
-                items: [{ ...item, lineId: result.lineId }],
-              });
-            }
-          } else if (existingItem) {
-            const newQuantity = existingItem.quantity + item.quantity;
-            if (!existingItem.lineId) return;
-            const result = await updateShopifyCartLine(
-              cartId,
-              existingItem.lineId,
-              newQuantity
-            );
-            if (result.success) {
-              const currentItems = get().items;
-              set({
-                items: currentItems.map((i) =>
-                  i.variantId === item.variantId
-                    ? { ...i, quantity: newQuantity }
-                    : i
-                ),
-              });
-            } else if (result.cartNotFound) {
-              clearCart();
-            }
-          } else {
-            const result = await addLineToShopifyCart(cartId, {
-              ...item,
-              lineId: null,
-            });
-            if (result.success) {
-              const currentItems = get().items;
-              set({
-                items: [...currentItems, { ...item, lineId: result.lineId ?? null }],
-              });
-            } else if (result.cartNotFound) {
-              clearCart();
-            }
-          }
-        } catch (e) {
-          console.error("Failed to add item:", e);
-        } finally {
-          set({ isLoading: false });
-        }
-      },
-
-      updateQuantity: async (variantId, quantity) => {
-        if (quantity <= 0) {
-          await get().removeItem(variantId);
+      addItem: (product, quantity = 1) => {
+        const items = get().items;
+        const existing = items.find((i) => i.productId === product.id);
+        if (existing) {
+          set({
+            items: items.map((i) =>
+              i.productId === product.id
+                ? { ...i, quantity: Math.min(i.quantity + quantity, 99) }
+                : i,
+            ),
+          });
           return;
         }
-        const { items, cartId, clearCart } = get();
-        const item = items.find((i) => i.variantId === variantId);
-        if (!item?.lineId || !cartId) return;
+        set({
+          items: [
+            ...items,
+            {
+              productId: product.id,
+              handle: product.handle,
+              title: product.title,
+              unit: product.unit,
+              imageUrl: product.imageUrl,
+              priceCents: product.priceCents,
+              currency: product.currency,
+              quantity,
+            },
+          ],
+        });
+      },
+
+      updateQuantity: (productId, quantity) => {
+        if (quantity <= 0) {
+          get().removeItem(productId);
+          return;
+        }
+        set({
+          items: get().items.map((i) =>
+            i.productId === productId ? { ...i, quantity: Math.min(quantity, 99) } : i,
+          ),
+        });
+      },
+
+      removeItem: (productId) => {
+        set({ items: get().items.filter((i) => i.productId !== productId) });
+      },
+
+      clearCart: () => set({ items: [] }),
+
+      checkout: async () => {
+        const items = get().items;
+        if (items.length === 0) return;
         set({ isLoading: true });
         try {
-          const result = await updateShopifyCartLine(cartId, item.lineId, quantity);
-          if (result.success) {
-            const currentItems = get().items;
-            set({
-              items: currentItems.map((i) =>
-                i.variantId === variantId ? { ...i, quantity } : i
-              ),
+          const response = await fetch("/api/checkout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              items: items.map((i) => ({
+                productId: i.productId,
+                quantity: i.quantity,
+              })),
+            }),
+          });
+          const data = (await response.json()) as {
+            url?: string;
+            error?: string;
+          };
+          if (!response.ok || !data.url) {
+            toast.error("Checkout fehlgeschlagen", {
+              description: data.error ?? "Bitte versuchen Sie es später erneut.",
             });
-          } else if (result.cartNotFound) {
-            clearCart();
+            return;
           }
+          window.location.href = data.url;
+        } catch (error) {
+          console.error("Checkout failed:", error);
+          toast.error("Checkout fehlgeschlagen", {
+            description: "Bitte versuchen Sie es später erneut.",
+          });
         } finally {
           set({ isLoading: false });
-        }
-      },
-
-      removeItem: async (variantId) => {
-        const { items, cartId, clearCart } = get();
-        const item = items.find((i) => i.variantId === variantId);
-        if (!item?.lineId || !cartId) return;
-        set({ isLoading: true });
-        try {
-          const result = await removeLineFromShopifyCart(cartId, item.lineId);
-          if (result.success) {
-            const currentItems = get().items;
-            const newItems = currentItems.filter((i) => i.variantId !== variantId);
-            newItems.length === 0 ? clearCart() : set({ items: newItems });
-          } else if (result.cartNotFound) {
-            clearCart();
-          }
-        } finally {
-          set({ isLoading: false });
-        }
-      },
-
-      clearCart: () => set({ items: [], cartId: null, checkoutUrl: null }),
-      getCheckoutUrl: () => get().checkoutUrl,
-
-      syncCart: async () => {
-        const { cartId, isSyncing, clearCart } = get();
-        if (!cartId || isSyncing) return;
-        set({ isSyncing: true });
-        try {
-          const data = await storefrontApiRequest<any>(CART_QUERY, { id: cartId });
-          if (!data) return;
-          const cart = data?.data?.cart;
-          if (!cart || cart.totalQuantity === 0) clearCart();
-        } catch (e) {
-          console.error("Failed to sync cart:", e);
-        } finally {
-          set({ isSyncing: false });
         }
       },
     }),
     {
-      name: "frankos-shopify-cart",
+      name: "frankos-cart",
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({
-        items: state.items,
-        cartId: state.cartId,
-        checkoutUrl: state.checkoutUrl,
-      }),
-    }
-  )
+      partialize: (state) => ({ items: state.items }),
+    },
+  ),
 );

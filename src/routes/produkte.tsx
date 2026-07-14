@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Search, Loader2 } from "lucide-react";
-import { useShopifyProducts } from "@/hooks/use-shopify-products";
+import { useProducts } from "@/hooks/use-products";
 import { ProductCard } from "@/components/featured-products";
 
 export const Route = createFileRoute("/produkte")({
@@ -25,25 +25,23 @@ export const Route = createFileRoute("/produkte")({
 function ProduktePage() {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<string>("alle");
-  const { data: products, isLoading, isError } = useShopifyProducts(100);
+  const { data: products, isLoading, isError } = useProducts();
 
-  // Derive categories dynamically from productType/tags returned by Shopify.
+  // Derive categories dynamically from the product data.
   const categories = useMemo(() => {
     const set = new Map<string, string>();
     (products ?? []).forEach((p) => {
-      const t = p.node.productType?.trim();
+      const t = p.category?.trim();
       if (t) set.set(t.toLowerCase(), t);
     });
     return Array.from(set.entries()).map(([id, label]) => ({ id, label }));
   }, [products]);
 
   const filtered = (products ?? []).filter((p) => {
-    const n = p.node;
     const matchesQ =
-      n.title.toLowerCase().includes(q.toLowerCase()) ||
-      (n.description ?? "").toLowerCase().includes(q.toLowerCase());
-    const matchesCat =
-      cat === "alle" || (n.productType ?? "").toLowerCase() === cat;
+      p.title.toLowerCase().includes(q.toLowerCase()) ||
+      (p.description ?? "").toLowerCase().includes(q.toLowerCase());
+    const matchesCat = cat === "alle" || (p.category ?? "").toLowerCase() === cat;
     return matchesQ && matchesCat;
   });
 
@@ -51,11 +49,15 @@ function ProduktePage() {
     <>
       <section className="border-b border-border/60 bg-[color:var(--brand-cream)]">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <p className="text-sm font-semibold uppercase tracking-widest text-secondary">Sortiment</p>
-          <h1 className="mt-2 font-display text-4xl font-bold text-foreground sm:text-5xl">Unsere Produkte</h1>
+          <p className="text-sm font-semibold uppercase tracking-widest text-secondary">
+            Sortiment
+          </p>
+          <h1 className="mt-2 font-display text-4xl font-bold text-foreground sm:text-5xl">
+            Unsere Produkte
+          </h1>
           <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-            Handverlesene Spezialitäten aus dem Balkan – direkt in Ihren Warenkorb. Für eine Bestellung kontaktieren
-            Sie uns bequem per WhatsApp oder Formular.
+            Handverlesene Spezialitäten aus dem Balkan – direkt in Ihren Warenkorb. Für eine
+            Bestellung kontaktieren Sie uns bequem per WhatsApp oder Formular.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -71,7 +73,9 @@ function ProduktePage() {
               />
             </div>
             <div className="flex flex-wrap gap-2">
-              <FilterChip active={cat === "alle"} onClick={() => setCat("alle")}>Alle</FilterChip>
+              <FilterChip active={cat === "alle"} onClick={() => setCat("alle")}>
+                Alle
+              </FilterChip>
               {categories.map((c) => (
                 <FilterChip key={c.id} active={cat === c.id} onClick={() => setCat(c.id)}>
                   {c.label}
@@ -98,7 +102,7 @@ function ProduktePage() {
         ) : (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filtered.map((p) => (
-              <ProductCard key={p.node.id} product={p} />
+              <ProductCard key={p.id} product={p} />
             ))}
           </div>
         )}
@@ -108,7 +112,8 @@ function ProduktePage() {
             Ihr Produkt nicht dabei?
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
-            Wir führen weit über 200 Produkte im Ladengeschäft. Fragen Sie uns gerne nach Ihrer Balkan-Spezialität!
+            Wir führen weit über 200 Produkte im Ladengeschäft. Fragen Sie uns gerne nach Ihrer
+            Balkan-Spezialität!
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link

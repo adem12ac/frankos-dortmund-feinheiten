@@ -1,13 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
 import { toast } from "sonner";
-import { ArrowLeft, Loader2, ShoppingCart, Check } from "lucide-react";
-import {
-  PRODUCT_BY_HANDLE_QUERY,
-  formatPrice,
-  storefrontApiRequest,
-} from "@/lib/shopify";
+import { ArrowLeft, Loader2, ShoppingCart } from "lucide-react";
+import { useProduct } from "@/hooks/use-products";
+import { formatPriceCents } from "@/lib/format";
 import { useCartStore } from "@/stores/cart-store";
 
 export const Route = createFileRoute("/produkt/$handle")({
@@ -15,7 +10,10 @@ export const Route = createFileRoute("/produkt/$handle")({
   head: ({ params }) => ({
     meta: [
       { title: `Produkt: ${params.handle} — Frankos Balkan Food` },
-      { name: "description", content: `Details und Bestellung für ${params.handle} bei Frankos Balkan Food Dortmund.` },
+      {
+        name: "description",
+        content: `Details und Bestellung für ${params.handle} bei Frankos Balkan Food Dortmund.`,
+      },
       { property: "og:url", content: `/produkt/${params.handle}` },
     ],
     links: [{ rel: "canonical", href: `/produkt/${params.handle}` }],
@@ -24,18 +22,9 @@ export const Route = createFileRoute("/produkt/$handle")({
 
 function ProductPage() {
   const { handle } = Route.useParams();
-  const [selectedVariantId, setSelectedVariantId] = useState<string | null>(null);
   const addItem = useCartStore((s) => s.addItem);
   const isCartLoading = useCartStore((s) => s.isLoading);
-
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["shopify-product", handle],
-    queryFn: async () => {
-      const res = await storefrontApiRequest<any>(PRODUCT_BY_HANDLE_QUERY, { handle });
-      return res?.data?.product ?? null;
-    },
-    staleTime: 60_000,
-  });
+  const { data: product, isLoading, isError } = useProduct(handle);
 
   if (isLoading) {
     return (
@@ -45,11 +34,13 @@ function ProductPage() {
     );
   }
 
-  if (isError || !data) {
+  if (isError || !product) {
     return (
       <div className="mx-auto max-w-2xl px-4 py-24 text-center">
         <h1 className="font-display text-3xl font-bold">Produkt nicht gefunden</h1>
-        <p className="mt-3 text-muted-foreground">Dieses Produkt existiert nicht mehr oder ist derzeit nicht verfügbar.</p>
+        <p className="mt-3 text-muted-foreground">
+          Dieses Produkt existiert nicht mehr oder ist derzeit nicht verfügbar.
+        </p>
         <Link to="/produkte" className="mt-6 inline-flex items-center gap-2 text-primary">
           <ArrowLeft className="h-4 w-4" /> Zurück zum Shop
         </Link>
@@ -57,22 +48,12 @@ function ProductPage() {
     );
   }
 
-  const variants = data.variants.edges.map((e: any) => e.node);
-  const currentVariant =
-    variants.find((v: any) => v.id === selectedVariantId) ?? variants[0];
-  const images = data.images.edges.map((e: any) => e.node);
-  const price = currentVariant.price;
+  const inStock = product.stock > 0;
 
-  const handleAdd = async () => {
-    await addItem({
-      product: { node: data },
-      variantId: currentVariant.id,
-      variantTitle: currentVariant.title,
-      price: currentVariant.price,
-      quantity: 1,
-      selectedOptions: currentVariant.selectedOptions ?? [],
-    });
-    toast.success("Zum Warenkorb hinzugefügt", { description: data.title });
+  const handleAdd = () => {
+    if (!inStock) return;
+    addItem(product, 1);
+    toast.success("Zum Warenkorb hinzugefügt", { description: product.title });
   };
 
   return (
@@ -86,62 +67,36 @@ function ProductPage() {
 
       <div className="grid gap-10 lg:grid-cols-2">
         <div className="space-y-4">
-          {images[0] && (
-            <div className="aspect-square overflow-hidden rounded-2xl border border-border bg-muted">
+          <div className="aspect-square overflow-hidden rounded-2xl border border-border bg-muted">
+            {product.imageUrl ? (
               <img
-                src={images[0].url}
-                alt={images[0].altText ?? data.title}
+                src={product.imageUrl}
+                alt={product.title}
                 className="h-full w-full object-cover"
               />
-            </div>
-          )}
-          {images.length > 1 && (
-            <div className="grid grid-cols-4 gap-3">
-              {images.slice(1, 5).map((img: any, i: number) => (
-                <div key={i} className="aspect-square overflow-hidden rounded-lg border border-border bg-muted">
-                  <img src={img.url} alt="" className="h-full w-full object-cover" />
-                </div>
-              ))}
-            </div>
-          )}
+            ) : (
+              <div className="flex h-full w-full items-center justify-center text-muted-foreground">
+                Kein Bild
+              </div>
+            )}
+          </div>
         </div>
 
         <div>
-          <h1 className="font-display text-3xl font-bold text-foreground sm:text-4xl">{data.title}</h1>
+          <h1 className="font-display text-3xl font-bold text-foreground sm:text-4xl">
+            {product.title}
+          </h1>
           <p className="mt-4 font-display text-3xl font-bold text-primary">
-            {formatPrice(price.amount, price.currencyCode)}
+            {formatPriceCents(product.priceCents, product.currency)}
           </p>
-          <div
-            className="prose prose-sm mt-6 max-w-none text-muted-foreground"
-            dangerouslySetInnerHTML={{ __html: data.descriptionHtml ?? "" }}
-          />
-
-          {variants.length > 1 && (
-            <div className="mt-6">
-              <div className="text-sm font-semibold text-foreground">Variante</div>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {variants.map((v: any) => (
-                  <button
-                    key={v.id}
-                    onClick={() => setSelectedVariantId(v.id)}
-                    disabled={!v.availableForSale}
-                    className={`inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm transition ${
-                      currentVariant.id === v.id
-                        ? "border-primary bg-primary text-primary-foreground"
-                        : "border-border bg-card text-foreground hover:border-primary/40"
-                    } disabled:opacity-40`}
-                  >
-                    {currentVariant.id === v.id && <Check className="h-3 w-3" />}
-                    {v.title}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
+          {product.unit && <p className="mt-1 text-sm text-muted-foreground">{product.unit}</p>}
+          <div className="prose prose-sm mt-6 max-w-none whitespace-pre-line text-muted-foreground">
+            {product.description}
+          </div>
 
           <button
             onClick={handleAdd}
-            disabled={isCartLoading || !currentVariant?.availableForSale}
+            disabled={isCartLoading || !inStock}
             className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-6 py-4 text-base font-semibold text-primary-foreground shadow-lg transition hover:bg-primary/90 disabled:opacity-50 sm:w-auto"
           >
             {isCartLoading ? (
@@ -149,11 +104,11 @@ function ProductPage() {
             ) : (
               <ShoppingCart className="h-5 w-5" />
             )}
-            {currentVariant?.availableForSale === false ? "Ausverkauft" : "In den Warenkorb"}
+            {inStock ? "In den Warenkorb" : "Ausverkauft"}
           </button>
 
           <div className="mt-8 space-y-2 border-t border-border pt-6 text-sm text-muted-foreground">
-            <p>✓ Sicheres Checkout über Shopify</p>
+            <p>✓ Sicheres Checkout über Stripe</p>
             <p>✓ Versand in ganz Deutschland (außer Bayern &amp; BW)</p>
             <p>✓ Fragen? Kontakt per WhatsApp: +49 174 1696161</p>
           </div>
