@@ -7,6 +7,7 @@ import { categories } from "@/lib/products";
 import { DeliveryInfo } from "@/components/delivery-info";
 import { GoogleReviews } from "@/components/google-reviews";
 import { FeaturedProducts } from "@/components/featured-products";
+import { LocationMap } from "@/components/location-map";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -253,6 +254,9 @@ function Index() {
           </div>
         </div>
       </section>
+
+      {/* STANDORT */}
+      <LocationMap />
     </>
   );
 }

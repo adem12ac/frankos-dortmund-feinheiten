@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { Search, Loader2 } from "lucide-react";
 import { useProducts } from "@/hooks/use-products";
 import { ProductCard } from "@/components/featured-products";
+import productsShowcaseImg from "@/assets/img/frankos-produkte-showcase.jpg";
 
 export const Route = createFileRoute("/produkte")({
   component: ProduktePage,
@@ -48,40 +49,52 @@ function ProduktePage() {
   return (
     <>
       <section className="border-b border-border/60 bg-[color:var(--brand-cream)]">
-        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <p className="text-sm font-semibold uppercase tracking-widest text-secondary">
-            Sortiment
-          </p>
-          <h1 className="mt-2 font-display text-4xl font-bold text-foreground sm:text-5xl">
-            Unsere Produkte
-          </h1>
-          <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
-            Handverlesene Spezialitäten aus dem Balkan – direkt in Ihren Warenkorb. Für eine
-            Bestellung kontaktieren Sie uns bequem per WhatsApp oder Formular.
-          </p>
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:px-8">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-widest text-secondary">
+              Sortiment
+            </p>
+            <h1 className="mt-2 font-display text-4xl font-bold text-foreground sm:text-5xl">
+              Unsere Produkte
+            </h1>
+            <p className="mt-4 max-w-2xl text-lg text-muted-foreground">
+              Handverlesene Spezialitäten aus dem Balkan – direkt in Ihren Warenkorb. Für eine
+              Bestellung kontaktieren Sie uns bequem per WhatsApp oder Formular.
+            </p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <div className="relative flex-1 min-w-[220px] max-w-md">
-              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <input
-                type="search"
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                placeholder="Produkt suchen..."
-                aria-label="Produkte durchsuchen"
-                className="w-full rounded-full border border-border bg-card py-2.5 pl-10 pr-4 text-sm outline-none ring-primary focus:ring-2"
-              />
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <FilterChip active={cat === "alle"} onClick={() => setCat("alle")}>
-                Alle
-              </FilterChip>
-              {categories.map((c) => (
-                <FilterChip key={c.id} active={cat === c.id} onClick={() => setCat(c.id)}>
-                  {c.label}
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <div className="relative flex-1 min-w-[220px] max-w-md">
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  type="search"
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  placeholder="Produkt suchen..."
+                  aria-label="Produkte durchsuchen"
+                  className="w-full rounded-full border border-border bg-card py-2.5 pl-10 pr-4 text-sm outline-none ring-primary focus:ring-2"
+                />
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <FilterChip active={cat === "alle"} onClick={() => setCat("alle")}>
+                  Alle
                 </FilterChip>
-              ))}
+                {categories.map((c) => (
+                  <FilterChip key={c.id} active={cat === c.id} onClick={() => setCat(c.id)}>
+                    {c.label}
+                  </FilterChip>
+                ))}
+              </div>
             </div>
+          </div>
+
+          <div className="relative mx-auto aspect-[4/5] w-full max-w-sm overflow-hidden rounded-3xl shadow-[var(--shadow-warm)] lg:max-w-none">
+            <img
+              src={productsShowcaseImg}
+              alt="Auswahl an Frankos Balkan-Spezialitäten: Ajvar, Pršuta, eingelegtes Gemüse und mehr"
+              className="h-full w-full object-cover"
+              loading="eager"
+              fetchPriority="high"
+            />
           </div>
         </div>
       </section>

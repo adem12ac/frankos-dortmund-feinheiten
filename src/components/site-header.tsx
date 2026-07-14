@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Menu, X, ShoppingBag } from "lucide-react";
-import logoAsset from "@/assets/frankos-logo.jpg.asset.json";
+import logoImg from "@/assets/img/frankos-logo.jpg";
 import { CartDrawer } from "@/components/cart-drawer";
 import { InstagramIcon, TikTokIcon } from "@/components/social-icons";
 
@@ -19,7 +19,7 @@ export function SiteHeader() {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <Link to="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
           <img
-            src={logoAsset.url}
+            src={logoImg}
             alt="Frankos Balkan Food Logo"
             className="h-12 w-12 rounded-full object-cover ring-2 ring-primary/20"
             width={48}
