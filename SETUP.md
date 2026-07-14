@@ -135,16 +135,25 @@ nur lesend, sollten aber trotzdem rotiert werden, wenn sie öffentlich waren.
 
 ---
 
-## 8. Vor dem ersten Deploy: Lockfile aktualisieren
+## 8. Paketmanager
 
-Das Projekt nutzt **bun** als Paketmanager. Die neuen Dependencies (`stripe`,
-`@supabase/supabase-js`) stehen bereits in der `package.json`, die `bun.lock`
-muss aber einmal lokal aktualisiert und mitcommittet werden:
+Das Projekt lief bisher auf **bun**, für den Vercel-Build wird jetzt **npm**
+verwendet (`package-lock.json` liegt im Repo, `bun.lock` wurde entfernt).
+Vercel erkennt npm automatisch am Lockfile — es ist keine manuelle
+Konfiguration nötig. Lokal weiterarbeiten mit `npm install` / `npm run dev`.
 
-```bash
-bun install
-git add bun.lock package.json
-git commit -m "Add stripe and supabase dependencies"
-```
+---
 
-Ohne diesen Schritt schlägt der Vercel-Build mit einem Lockfile-Mismatch fehl.
+## 9. Ein-Klick-Import auf Vercel
+
+Sobald dieser Branch nach `main` gemergt ist, reicht:
+
+1. [vercel.com/new](https://vercel.com/new) → **Import Git Repository** →
+   `adem12ac/frankos-dortmund-feinheiten` auswählen.
+2. Framework wird automatisch als **Vite** erkannt, Build-Command und Output
+   müssen nicht angepasst werden (Nitro übernimmt das).
+3. Unter **Environment Variables** die sechs Variablen aus Abschnitt 1
+   eintragen.
+4. **Deploy** klicken.
+
+Jeder weitere Push auf `main` deployt danach automatisch neu.
