@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Truck, Leaf, Award, Clock, MapPin, Phone } from "lucide-react";
 import heroAsset from "@/assets/frankos-hero.jpg.asset.json";
 import shelfAsset from "@/assets/store-shelf.jpg.asset.json";
-import prsutaAsset from "@/assets/prsuta-slices.jpg.asset.json";
+import visitBannerImg from "@/assets/img/frankos-visit-banner.png";
 import { categories } from "@/lib/products";
 import { DeliveryInfo } from "@/components/delivery-info";
 import { GoogleReviews } from "@/components/google-reviews";
@@ -214,9 +214,10 @@ function Index() {
       <GoogleReviews />
 
       {/* CTA */}
-      <section className="relative overflow-hidden bg-primary text-primary-foreground">
-        <div className="absolute inset-0 opacity-15">
-          <img src={prsutaAsset.url} alt="" className="h-full w-full object-cover" aria-hidden />
+      <section className="relative overflow-hidden text-primary-foreground">
+        <div className="absolute inset-0">
+          <img src={visitBannerImg} alt="" className="h-full w-full object-cover" aria-hidden />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/55 to-black/35" />
         </div>
         <div className="relative mx-auto grid max-w-7xl gap-8 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_auto] lg:items-center lg:px-8">
           <div>
