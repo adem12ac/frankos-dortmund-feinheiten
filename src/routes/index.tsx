@@ -76,7 +76,7 @@ function Index() {
           <div className="absolute inset-0 bg-gradient-to-br from-black/75 via-black/55 to-primary/40" />
         </div>
         <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8 lg:py-40">
-          <div className="max-w-2xl fade-up">
+          <div className="max-w-2xl fade-up lg:ml-auto">
             <span className="inline-flex items-center gap-2 rounded-full bg-accent/95 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary">
               <span>★</span> Seit über 10 Jahren in Dortmund
             </span>
