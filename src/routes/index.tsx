@@ -55,7 +55,7 @@ function Index() {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
           <video
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover object-right"
             src="/videos/hero.mp4"
             poster={heroAsset.url}
             autoPlay
