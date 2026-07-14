@@ -2,7 +2,10 @@
 // Never import this file from client components.
 
 export function requireEnv(name: string): string {
-  const value = process.env[name];
+  // .trim() guards against a stray trailing newline/space that easily sneaks
+  // in when pasting values into Vercel's Environment Variables UI — this bit
+  // us twice already (ADMIN_PASSWORD, then almost STRIPE_WEBHOOK_SECRET).
+  const value = process.env[name]?.trim();
   if (!value) {
     throw new Error(
       `Missing required environment variable "${name}". ` +
@@ -13,5 +16,5 @@ export function requireEnv(name: string): string {
 }
 
 export function optionalEnv(name: string): string | undefined {
-  return process.env[name] || undefined;
+  return process.env[name]?.trim() || undefined;
 }

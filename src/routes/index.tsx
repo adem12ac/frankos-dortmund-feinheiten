@@ -53,12 +53,25 @@ function Index() {
       {/* HERO */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
-          <img
-            src={heroAsset.url}
-            alt="Balkan Spezialitäten von Frankos"
+          <video
             className="h-full w-full object-cover"
-            fetchPriority="high"
-          />
+            src="/videos/hero.mp4"
+            poster={heroAsset.url}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            aria-hidden="true"
+          >
+            {/* Fällt automatisch auf das poster-Bild zurück, falls Video
+                nicht abgespielt werden kann (z. B. sehr alte Browser). */}
+            <img
+              src={heroAsset.url}
+              alt="Balkan Spezialitäten von Frankos"
+              className="h-full w-full object-cover"
+            />
+          </video>
           <div className="absolute inset-0 bg-gradient-to-br from-black/75 via-black/55 to-primary/40" />
         </div>
         <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8 lg:py-40">
@@ -73,8 +86,8 @@ function Index() {
               </span>
             </h1>
             <p className="mt-6 max-w-xl text-lg text-white/90">
-              Bei <strong>Frankos GmbH</strong> finden Sie authentische Spezialitäten aus Montenegro, Serbien, Kroatien
-              und Albanien. Frisch, ehrlich und mit Liebe ausgewählt.
+              Bei <strong>Frankos GmbH</strong> finden Sie authentische Spezialitäten aus
+              Montenegro, Serbien, Kroatien und Albanien. Frisch, ehrlich und mit Liebe ausgewählt.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
@@ -119,12 +132,15 @@ function Index() {
       {/* CATEGORIES */}
       <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
         <div className="mb-12 max-w-2xl">
-          <p className="text-sm font-semibold uppercase tracking-widest text-secondary">Unser Sortiment</p>
+          <p className="text-sm font-semibold uppercase tracking-widest text-secondary">
+            Unser Sortiment
+          </p>
           <h2 className="mt-2 font-display text-4xl font-bold text-foreground sm:text-5xl">
             Balkan-Spezialitäten für jeden Anlass
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Von hausgemachtem Ajvar bis luftgetrocknetem Pršuta – entdecken Sie unsere sorgfältig kuratierte Auswahl.
+            Von hausgemachtem Ajvar bis luftgetrocknetem Pršuta – entdecken Sie unsere sorgfältig
+            kuratierte Auswahl.
           </p>
         </div>
 
@@ -150,18 +166,20 @@ function Index() {
       <section className="bg-[color:var(--brand-cream)]">
         <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:px-8">
           <div className="fade-up">
-            <p className="text-sm font-semibold uppercase tracking-widest text-secondary">Unsere Geschichte</p>
+            <p className="text-sm font-semibold uppercase tracking-widest text-secondary">
+              Unsere Geschichte
+            </p>
             <h2 className="mt-2 font-display text-4xl font-bold text-foreground sm:text-5xl">
               Ein Stück Heimat in jedem Bissen
             </h2>
             <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-              Frankos wurde mit einer einfachen Vision gegründet: Menschen in Dortmund und Umgebung Zugang zu den
-              echten Geschmäckern des Balkans zu geben. Wir arbeiten direkt mit kleinen Familienbetrieben aus
-              Montenegro, Serbien und Albanien zusammen.
+              Frankos wurde mit einer einfachen Vision gegründet: Menschen in Dortmund und Umgebung
+              Zugang zu den echten Geschmäckern des Balkans zu geben. Wir arbeiten direkt mit
+              kleinen Familienbetrieben aus Montenegro, Serbien und Albanien zusammen.
             </p>
             <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-              Jedes Produkt in unserem Sortiment wird persönlich ausgewählt – nach traditionellen Rezepten,
-              handwerklich hergestellt und ohne unnötige Zusätze.
+              Jedes Produkt in unserem Sortiment wird persönlich ausgewählt – nach traditionellen
+              Rezepten, handwerklich hergestellt und ohne unnötige Zusätze.
             </p>
             <Link
               to="/ueber-uns"
@@ -201,9 +219,12 @@ function Index() {
         </div>
         <div className="relative mx-auto grid max-w-7xl gap-8 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_auto] lg:items-center lg:px-8">
           <div>
-            <h2 className="font-display text-3xl font-bold sm:text-4xl">Besuchen Sie uns in Dortmund</h2>
+            <h2 className="font-display text-3xl font-bold sm:text-4xl">
+              Besuchen Sie uns in Dortmund
+            </h2>
             <p className="mt-3 max-w-2xl text-lg text-white/85">
-              Kommen Sie vorbei, probieren Sie unsere Spezialitäten und lassen Sie sich beraten. Wir freuen uns auf Sie!
+              Kommen Sie vorbei, probieren Sie unsere Spezialitäten und lassen Sie sich beraten. Wir
+              freuen uns auf Sie!
             </p>
             <div className="mt-5 flex flex-wrap items-center gap-5 text-sm">
               <span className="inline-flex items-center gap-2">
