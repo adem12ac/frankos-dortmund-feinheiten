@@ -1,8 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Truck, Leaf, Award, Clock, MapPin, Phone } from "lucide-react";
 import heroAsset from "@/assets/frankos-hero.jpg.asset.json";
-import shelfAsset from "@/assets/store-shelf.jpg.asset.json";
-import prsutaAsset from "@/assets/prsuta-slices.jpg.asset.json";
+import productsShowcaseImg from "@/assets/img/frankos-produkte-showcase.jpg";
+import visitBannerImg from "@/assets/img/frankos-visit-banner.png";
 import { categories } from "@/lib/products";
 import { DeliveryInfo } from "@/components/delivery-info";
 import { GoogleReviews } from "@/components/google-reviews";
@@ -55,7 +55,7 @@ function Index() {
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">
           <video
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover object-right"
             src="/videos/hero.mp4"
             poster={heroAsset.url}
             autoPlay
@@ -77,7 +77,7 @@ function Index() {
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
         </div>
         <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8 lg:py-40">
-          <div className="max-w-2xl fade-up">
+          <div className="max-w-2xl fade-up lg:ml-auto">
             <span className="inline-flex items-center gap-2 rounded-full bg-accent/95 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-primary">
               <span>★</span> Seit über 10 Jahren in Dortmund
             </span>
@@ -166,15 +166,15 @@ function Index() {
 
       {/* STORY */}
       <section className="bg-[color:var(--brand-cream)]">
-        <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:px-8">
-          <div className="fade-up">
+        <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 py-20 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-16 lg:px-8">
+          <div className="fade-up rounded-[2rem] border border-border/70 bg-card/70 p-8 shadow-[var(--shadow-soft)] sm:p-10 lg:p-12">
             <p className="text-sm font-semibold uppercase tracking-widest text-secondary">
               Unsere Geschichte
             </p>
-            <h2 className="mt-2 font-display text-4xl font-bold text-foreground sm:text-5xl">
+            <h2 className="mt-3 font-display text-4xl font-bold leading-tight text-foreground sm:text-5xl">
               Ein Stück Heimat in jedem Bissen
             </h2>
-            <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
+            <p className="mt-7 text-lg leading-relaxed text-muted-foreground">
               Frankos wurde mit einer einfachen Vision gegründet: Menschen in Dortmund und Umgebung
               Zugang zu den echten Geschmäckern des Balkans zu geben. Wir arbeiten direkt mit
               kleinen Familienbetrieben aus Montenegro, Serbien und Albanien zusammen.
@@ -185,19 +185,19 @@ function Index() {
             </p>
             <Link
               to="/ueber-uns"
-              className="mt-8 inline-flex items-center gap-2 text-base font-semibold text-primary hover:text-primary/80"
+              className="mt-8 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
             >
               Mehr über uns erfahren <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
-          <div className="relative">
+          <div className="relative pb-7 sm:pl-7">
             <img
-              src={shelfAsset.url}
-              alt="Regale voller Balkan-Spezialitäten im Frankos Ladengeschäft"
-              className="rounded-3xl object-cover shadow-[var(--shadow-warm)]"
+              src={productsShowcaseImg}
+              alt="Auswahl an Frankos Balkan-Spezialitäten"
+              className="h-[420px] w-full rounded-[2rem] border border-border bg-card object-cover shadow-[var(--shadow-warm)] sm:h-[500px]"
               loading="lazy"
             />
-            <div className="absolute -bottom-6 -left-6 hidden rounded-2xl bg-card p-5 shadow-lg sm:block">
+            <div className="absolute bottom-0 left-0 rounded-2xl border border-border/70 bg-card px-6 py-5 shadow-lg">
               <div className="font-display text-3xl font-bold text-primary">200+</div>
               <div className="text-sm text-muted-foreground">Balkan-Produkte im Sortiment</div>
             </div>
@@ -215,9 +215,10 @@ function Index() {
       <GoogleReviews />
 
       {/* CTA */}
-      <section className="relative overflow-hidden bg-primary text-primary-foreground">
-        <div className="absolute inset-0 opacity-15">
-          <img src={prsutaAsset.url} alt="" className="h-full w-full object-cover" aria-hidden />
+      <section className="relative overflow-hidden text-primary-foreground">
+        <div className="absolute inset-0">
+          <img src={visitBannerImg} alt="" className="h-full w-full object-cover" aria-hidden />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/55 to-black/35" />
         </div>
         <div className="relative mx-auto grid max-w-7xl gap-8 px-4 py-16 sm:px-6 lg:grid-cols-[1fr_auto] lg:items-center lg:px-8">
           <div>
