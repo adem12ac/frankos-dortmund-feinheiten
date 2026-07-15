@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Truck, Leaf, Award, Clock, MapPin, Phone } from "lucide-react";
 import heroAsset from "@/assets/frankos-hero.jpg.asset.json";
 import productsShowcaseImg from "@/assets/img/frankos-produkte-showcase.jpg";
-import visitBannerImg from "@/assets/img/frankos-visit-banner.png";
+import visitBannerImg from "@/assets/img/frankos-visit-banner.jpg";
 import { categories } from "@/lib/products";
 import { DeliveryInfo } from "@/components/delivery-info";
 import { GoogleReviews } from "@/components/google-reviews";
