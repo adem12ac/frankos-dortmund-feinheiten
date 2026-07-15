@@ -73,7 +73,8 @@ function Index() {
               className="h-full w-full object-cover"
             />
           </video>
-          <div className="absolute inset-0 bg-gradient-to-br from-black/75 via-black/55 to-primary/40" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
         </div>
         <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8 lg:py-40">
           <div className="max-w-2xl fade-up">

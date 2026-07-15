@@ -1,4 +1,12 @@
-import { Truck, MapPin, Package, ShieldCheck } from "lucide-react";
+import {
+  Truck,
+  MapPin,
+  Package,
+  ShieldCheck,
+  ShoppingCart,
+  PackageCheck,
+  Home,
+} from "lucide-react";
 
 export function DeliveryInfo() {
   return (
@@ -13,33 +21,73 @@ export function DeliveryInfo() {
               Deutschlandweiter Versand — direkt von Frankos zu Ihnen
             </h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              Wir liefern unsere Balkan-Spezialitäten mit eigenem Versand in ganz Deutschland
-              — mit einer Ausnahme: Süddeutschland (Bayern &amp; Baden-Württemberg) beliefern wir
-              aktuell nicht.
+              Wir liefern unsere Balkan-Spezialitäten mit eigenem Versand in ganz Deutschland — mit
+              einer Ausnahme: Süddeutschland (Bayern &amp; Baden-Württemberg) beliefern wir aktuell
+              nicht.
             </p>
             <ul className="mt-6 grid gap-3 sm:grid-cols-2">
-              <Feature icon={Truck} title="Eigene Lieferung">Frisch und gekühlt verpackt</Feature>
-              <Feature icon={Package} title="Sichere Verpackung">Speziell für Lebensmittel</Feature>
-              <Feature icon={ShieldCheck} title="Frische garantiert">Kühlkette lückenlos</Feature>
-              <Feature icon={MapPin} title="In ganz Deutschland">Außer Bayern &amp; BW</Feature>
+              <Feature icon={Truck} title="Eigene Lieferung">
+                Frisch und gekühlt verpackt
+              </Feature>
+              <Feature icon={Package} title="Sichere Verpackung">
+                Speziell für Lebensmittel
+              </Feature>
+              <Feature icon={ShieldCheck} title="Frische garantiert">
+                Kühlkette lückenlos
+              </Feature>
+              <Feature icon={MapPin} title="In ganz Deutschland">
+                Außer Bayern &amp; BW
+              </Feature>
             </ul>
             <p className="mt-6 rounded-2xl border border-border bg-background/60 p-4 text-sm text-muted-foreground">
-              <strong className="text-foreground">Hinweis:</strong> Bestellungen aus Bayern
-              oder Baden-Württemberg können aktuell nicht ausgeliefert werden. Für persönliche
-              Abholung besuchen Sie uns gerne in Dortmund.
+              <strong className="text-foreground">Hinweis:</strong> Bestellungen aus Bayern oder
+              Baden-Württemberg können aktuell nicht ausgeliefert werden. Für persönliche Abholung
+              besuchen Sie uns gerne in Dortmund.
             </p>
           </div>
-          <div className="relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary/10 via-card to-secondary/10 p-8">
-            <div className="mx-auto max-w-sm">
-              <GermanyMap />
-            </div>
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-xs">
-              <span className="inline-flex items-center gap-2">
-                <span className="h-3 w-3 rounded-sm bg-primary" /> Lieferung möglich
-              </span>
-              <span className="inline-flex items-center gap-2">
-                <span className="h-3 w-3 rounded-sm bg-muted-foreground/40" /> Keine Lieferung
-              </span>
+
+          <div className="overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-primary/10 via-card to-secondary/10 p-8">
+            <p className="text-center text-sm font-semibold uppercase tracking-widest text-secondary">
+              So läuft Ihre Lieferung ab
+            </p>
+
+            <ol className="mt-8 space-y-0">
+              <DeliveryStep
+                icon={ShoppingCart}
+                step={1}
+                title="Warenkorb"
+                description="Produkte auswählen und sicher bei Stripe bezahlen"
+                isLast={false}
+              />
+              <DeliveryStep
+                icon={PackageCheck}
+                step={2}
+                title="Frisch verpackt"
+                description="Wir verpacken Ihre Bestellung gekühlt & lebensmittelsicher"
+                isLast={false}
+              />
+              <DeliveryStep
+                icon={Home}
+                step={3}
+                title="Geliefert"
+                description="Ankunft direkt an Ihrer Haustür — deutschlandweit"
+                isLast
+              />
+            </ol>
+
+            <div className="mt-8 flex items-start gap-3 rounded-2xl border border-border bg-background/70 p-4">
+              <div className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+                <MapPin className="h-4 w-4" />
+              </div>
+              <div className="text-sm">
+                <div className="font-semibold text-foreground">Liefergebiet: ganz Deutschland</div>
+                <div className="mt-0.5 text-muted-foreground">
+                  Ausgenommen{" "}
+                  <span className="font-medium text-foreground">
+                    Bayern &amp; Baden-Württemberg
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -70,23 +118,34 @@ function Feature({
   );
 }
 
-function GermanyMap() {
+function DeliveryStep({
+  icon: Icon,
+  step,
+  title,
+  description,
+  isLast,
+}: {
+  icon: React.ElementType;
+  step: number;
+  title: string;
+  description: string;
+  isLast: boolean;
+}) {
   return (
-    <svg viewBox="0 0 300 400" className="h-auto w-full" role="img" aria-label="Karte Deutschland Lieferzone">
-      <path
-        d="M110 20 C140 15 170 20 200 30 L230 50 L250 90 L245 130 L260 160 L250 200 L230 230 L210 250 L190 260 L170 260 L150 250 L130 240 L110 235 L90 220 L70 200 L60 170 L55 140 L65 110 L80 80 L95 50 Z"
-        className="fill-primary/80 stroke-primary"
-        strokeWidth="2"
-      />
-      <path
-        d="M110 235 L130 240 L150 250 L170 260 L190 260 L210 250 L215 275 L225 300 L215 330 L195 355 L165 370 L135 375 L110 365 L90 340 L80 310 L85 275 L95 250 Z"
-        className="fill-muted-foreground/30 stroke-muted-foreground/60"
-        strokeWidth="2"
-        strokeDasharray="4 4"
-      />
-      <circle cx="105" cy="145" r="6" className="fill-accent stroke-primary" strokeWidth="2" />
-      <text x="115" y="150" className="fill-foreground text-[11px] font-semibold">Dortmund</text>
-      <text x="130" y="315" className="fill-muted-foreground text-[10px] font-medium">Süddeutschland: keine Lieferung</text>
-    </svg>
+    <li className="flex gap-4">
+      <div className="flex flex-col items-center">
+        <div className="grid h-11 w-11 shrink-0 place-items-center rounded-full border-2 border-primary bg-background text-primary shadow-sm">
+          <Icon className="h-5 w-5" />
+        </div>
+        {!isLast && <div className="my-1 w-0.5 flex-1 bg-primary/25" />}
+      </div>
+      <div className={isLast ? "pb-0" : "pb-7"}>
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-bold text-primary">Schritt {step}</span>
+        </div>
+        <div className="font-display text-lg font-bold text-foreground">{title}</div>
+        <p className="mt-0.5 text-sm text-muted-foreground">{description}</p>
+      </div>
+    </li>
   );
 }
